@@ -1,0 +1,46 @@
+################################################################################
+#      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
+#      SPDX-License-Identifier:  GPL-2.0-only                                  #
+################################################################################
+name: CI                                                                       #
+on:                                                                            #
+  push:                                                                        #
+    branches:                                                                  #
+    - docker                                                                   #
+jobs:                                                                          #
+  docker:                                                                      #
+    runs-on: ubuntu-18.04                                                      #
+    steps:                                                                     #
+    -                                                                          #
+      name: checkout                                                           #
+      uses: actions/checkout@v2                                                #
+    -                                                                          #
+      name: test                                                               #
+      run: |                                                                   #
+        set -x                                                                 ;
+                                                                               #
+        branch=$(basename $GITHUB_REF)                                         ;
+        project=$(basename $GITHUB_REPOSITORY)                                 ;
+                                                                               #
+        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
+                                                                               #
+        docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
+                                                                               #
+        docker run                                                             \
+           --cpus "0.5" -m 1G --memory-reservation 1G                          \
+           -v $PWD/data/words.txt:/app/data:ro                                 \
+           --name test $GITHUB_REPOSITORY:$release-testing                     ;
+                                                                               #
+        docker exec test ps
+        docker logs test
+        
+        while true                                                             ;
+          do                                                                   \
+            sleep 10                                                           ;
+            docker exec test ps                                                \
+            |                                                                  \
+            grep "1.*python.*script.py"                           \
+            &&                                                                 \
+            break                                                              ;
+          done                                                                 ;
+                                                                               #
