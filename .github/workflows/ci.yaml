@@ -31,15 +31,14 @@ jobs:                                                                          #
            -v $PWD/data/words.txt:/app/data:ro                                 \
            --name test $GITHUB_REPOSITORY:$release-testing                     ;
                                                                                #
-        docker exec test ps
         docker logs test
         
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            docker exec test ps                                                \
+            docker logs test                                                \
             |                                                                  \
-            grep "1.*python.*script.py"                           \
+            grep '{1:'                           \
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
