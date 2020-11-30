@@ -30,15 +30,13 @@ jobs:                                                                          #
            --cpus "0.5" -m 1G --memory-reservation 1G                          \
            -v $PWD/data/words.txt:/app/data:ro                                 \
            --name test $GITHUB_REPOSITORY:$release-testing                     ;
-                                                                               #
-        docker logs test
-        
+                                                                               #      
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            docker logs test                                                \
+            docker logs test                                                   \
             |                                                                  \
-            grep '{1:'                           \
+            grep '{1:'                                                         \
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
