@@ -5,6 +5,7 @@
 FROM python:alpine
 WORKDIR /app
 COPY src/anagrams.py script.py
+VOLUME /app/data
 ENTRYPOINT ["python"]
 CMD ["script.py"]
 ################################################################################
