@@ -1,0 +1,7 @@
+services:
+  python:
+    image: academiaonline/anagrams:latest
+    restart: "no"
+    volumes:
+    - ./data/words.txt:/words.txt
+version: "2.0"
