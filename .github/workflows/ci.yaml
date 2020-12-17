@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches:
+    - docker
+jobs:
+  docker:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: code-checkout
+      uses: actions/checkout@v2
+    - name: test-image
+      env:
+        output_pattern: '{1:'
+        v_path_host: "data/words.txt"
+        v_path_container: "/words.txt"
+      run: |
+        docker build -t test-image:ci "${PWD}"
+        docker run -v "${PWD}/${v_path_host}:${v_path_container}" -d --name test-container test-image:ci
+        while true
+          do
+            sleep 10
+            docker logs test-container | grep "${output_pattern}" && break
+          done
