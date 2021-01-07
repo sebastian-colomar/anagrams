@@ -11,7 +11,7 @@ jobs:
       uses: actions/checkout@v2
     - name: test-image
       env:
-        output_pattern: '{1:'
+        output_pattern: '{1: 0, 2: 80, 3: 805, 5: 4497, 4: 2790, 8: 4821, 7: 5759, 9: 3552, 6: 6246, 11: 1054, 10: 2082, 12: 558, 14: 140, 16: 70, 15: 90, 20: 6, 19: 14, 17: 44, 13: 250, 18: 20, 21: 8, 22: 4, 23: 0, 24: 0}'
         v_path_host: "data/words.txt"
         v_path_container: "/words.txt"
       run: |
