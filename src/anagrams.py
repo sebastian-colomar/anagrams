@@ -14,7 +14,7 @@
 import collections
 
 # Declare the variables
-fichero='words.txt'
+fichero='/data/words.txt'
 
 # Clean the list of words
 lista=sorted(list(set([palabra.strip().lower() for palabra in open(fichero,'r')])))
