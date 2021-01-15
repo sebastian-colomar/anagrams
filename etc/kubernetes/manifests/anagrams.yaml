@@ -16,12 +16,12 @@ spec:
         imagePullPolicy: Always
         volumeMounts:
         - name: data
-          mountPath: /words.txt
-          readOnly: true
-          subPath: words.txt
+          mountPath: /data
+          #readOnly: true
+      restartPolicy: Never
       volumes:
       - name: data
         hostPath:
-          path: /tmp/words.txt
-          type: File
+          path: /tmp/data
+          type: Directory
 ---
