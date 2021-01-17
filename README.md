@@ -1,2 +1,2 @@
 # anagrams
-![CI](https://github.com/academiaonline/anagrams/workflows/CI/badge.svg?branch=docker)
+![CI](https://github.com/academiaonline/anagrams/workflows/CI/badge.svg?branch=v1.3)
