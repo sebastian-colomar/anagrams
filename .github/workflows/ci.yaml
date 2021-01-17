@@ -41,7 +41,6 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            docker logs test-container
             docker logs test-container                                         \
               2>& 1                                                            \
             |                                                                  \
@@ -98,7 +97,6 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            kubectl logs job/$project
             kubectl logs job/$project                                          \
             |                                                                  \
             grep "${output_pattern}"                                           \
