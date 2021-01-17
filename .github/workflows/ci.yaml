@@ -6,7 +6,7 @@ name: CI                                                                       #
 on:                                                                            #
   push:                                                                        #
     branches:                                                                  #
-    - docker                                                                   #
+    - v1.3                                                                     #
 jobs:                                                                          #
   docker:                                                                      #
     runs-on: ubuntu-18.04                                                      #
