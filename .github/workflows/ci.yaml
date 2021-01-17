@@ -1,37 +1,62 @@
-name: CI
-on:
-  push:
-    branches:
-    - docker
-jobs:
-  docker:
-    runs-on: ubuntu-18.04
-    steps:
-    - name: code-checkout
-      uses: actions/checkout@v2
-    - name: test-image
-      env:
+################################################################################
+#      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
+#      SPDX-License-Identifier:  GPL-2.0-only                                  #
+################################################################################
+name: CI                                                                       #
+on:                                                                            #
+  push:                                                                        #
+    branches:                                                                  #
+    - docker                                                                   #
+jobs:                                                                          #
+  docker:                                                                      #
+    runs-on: ubuntu-18.04                                                      #
+    steps:                                                                     #
+    - name: code-checkout                                                      #
+      uses: actions/checkout@v2                                                #
+    - name: test-image                                                         #
+      env:                                                                     #
         output_pattern: '{1: 0, 2: 80, 3: 805, 5: 4497, 4: 2790, 8: 4821, 7: 5759, 9: 3552, 6: 6246, 11: 1054, 10: 2082, 12: 558, 14: 140, 16: 70, 15: 90, 20: 6, 19: 14, 17: 44, 13: 250, 18: 20, 21: 8, 22: 4, 23: 0, 24: 0}'
-        v_path_host: "data"
-        v_path_container: "/data"
-      run: |
-        docker build -t test-image:ci "${PWD}"
-        docker run -v "${PWD}/${v_path_host}:${v_path_container}" -d --name test-container test-image:ci
-        while true
-          do
-            sleep 10
-            docker logs test-container | grep "${output_pattern}" && break
-          done
-  kubernetes:
-    runs-on: ubuntu-18.04
-    steps:
-    - name: code-checkout
-      uses: actions/checkout@v2
-    - name: test-image
-      env:
+      run: |                                                                   #
+        set -x                                                                 ;
+                                                                               #
+        branch=$(basename $GITHUB_REF)                                         ;
+        project=$(basename $GITHUB_REPOSITORY)                                 ;
+                                                                               #
+        echo $branch | grep ^v[0-9]                                            \
+          && release=$( echo $branch | awk -F^v '{ print $2 }' )               \
+          || release=latest                                                    ;
+                                                                               #
+        docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache "${PWD}";
+                                                                               #
+        docker run -d                                                          \
+          --cpus "0.1" -m 100m --memory-reservation 100m                       \
+          --health-interval=10s                                                \
+          --health-retries=3                                                   \
+          --health-start-period=30s                                            \
+          --health-timeout=1s                                                  \
+          --name test-container                                                \
+          $GITHUB_REPOSITORY:$release-testing                                  ;
+                                                                               #
+        while true                                                             ;
+          do                                                                   \
+            sleep 10                                                           ;
+            docker logs test-container                                         \
+              2>& 1                                                            \
+            |                                                                  \
+            grep "${output_pattern}"                                           \
+            &&                                                                 \
+            break                                                              ;
+          done                                                                 ;
+  kubernetes:                                                                  #
+    env:                                                                       #
+      mode: kubernetes                                                         #
+    runs-on: ubuntu-18.04                                                      #
+    steps:                                                                     #
+    - name: code-checkout                                                      #
+      uses: actions/checkout@v2                                                #
+    - name: test-image                                                         #
+      env:                                                                     #
         output_pattern: '{1: 0, 2: 80, 3: 805, 5: 4497, 4: 2790, 8: 4821, 7: 5759, 9: 3552, 6: 6246, 11: 1054, 10: 2082, 12: 558, 14: 140, 16: 70, 15: 90, 20: 6, 19: 14, 17: 44, 13: 250, 18: 20, 21: 8, 22: 4, 23: 0, 24: 0}'
-        v_path_host: "/tmp/words.txt"
-        v_path_container: "/words.txt"
       run: |                                                                   #
         set -x                                                                 ;
                                                                                #
@@ -48,13 +73,24 @@ jobs:
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache ${PWD}  ;
                                                                                #
         uuid=$( md5sum $compose | cut -d' ' -f1 )                              ;
-        git clone --single-branch -b v1.0                                      \
+        git clone --single-branch -b v1.2                                      \
           https://github.com/academiaonline/kubernetes $uuid                   ;
         path=$uuid/bin/standalone/ubuntu18/install.sh                          ;
         source $path                                                           ;
         rm -rf $uuid                                                           ;
                                                                                #
+        sudo cp -rv data/ /tmp/                                                ;
+                                                                               #
         sed -i /imagePullPolicy/s/Always/Never/ $compose                       ;
         kubectl apply -f $compose                                              ;
                                                                                #
+        while true                                                             ;
+          do                                                                   \
+            sleep 10                                                           ;
+            kubectl logs job/$project                                          \
+            |                                                                  \
+            grep "${output_pattern}"                                           \
+            &&                                                                 \
+            break                                                              ;
+          done                                                                 ;
 ################################################################################
