@@ -73,7 +73,7 @@ jobs:                                                                          #
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache ${PWD}  ;
                                                                                #
-        uuid=$( md5sum $compose | cut -d" " -f1 )                              ;
+        uuid=$( md5sum $compose | cut -d\  -f1 )                               ;
         git clone --single-branch -b v1.2                                      \
           https://github.com/academiaonline/kubernetes $uuid                   ;
         path=$uuid/bin/cluster/ubuntu18/install-docker-kubelet.sh              ;
