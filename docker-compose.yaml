@@ -3,5 +3,5 @@ services:
     image: academiaonline/anagrams:latest
     restart: "no"
     volumes:
-    - ./data/words.txt:/data/words.txt
+    - /tmp/data:/data:ro
 version: "2.0"
