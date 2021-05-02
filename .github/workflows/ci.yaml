@@ -68,8 +68,8 @@ jobs:                                                                          #
           && release=$( echo $branch | awk -F^v '{ print $2 }' )               \
           || release=latest                                                    ;
                                                                                #
-        compose=etc/$mode/manifests/$project.yaml                              ;
-        sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
+        manifests=etc/$mode/manifests                                          ;
+        sed -i /image:.*$project/s/$release/$release-testing/ ${manifests}/*.yaml ;
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache ${PWD}  ;
                                                                                #
@@ -84,10 +84,8 @@ jobs:                                                                          #
         kubectl taint node $master node-role.kubernetes.io/master:NoSchedule-  ;
         rm -rf $uuid                                                           ;
                                                                                #
-        sudo cp -rv data/ /tmp/                                                ;
-                                                                               #
-        sed -i /imagePullPolicy/s/Always/Never/ $compose                       ;
-        kubectl apply -f $compose                                              ;
+        sed -i /imagePullPolicy/s/Always/Never/ ${manifests}/*.yaml            ;
+        kubectl apply -f ${manifests} -R                                       ;
                                                                                #
         while true                                                             ;
           do                                                                   \
