@@ -1,6 +1,6 @@
 services:
   anagrams:
-    image: academiaonline/anagrams:latest
+    image: academiaonline/anagrams:2.0
     restart: "no"
     volumes:
     - /tmp/data:/data:ro
