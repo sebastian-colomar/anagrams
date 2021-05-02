@@ -1,0 +1,61 @@
+#########################################################################
+#      Copyright (C) 2020        Sebastian Francisco Colomar Bauza      #
+#      SPDX-License-Identifier:  GPL-2.0-only                           #
+#########################################################################
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: anagrams-job
+spec:
+  template:
+    spec:
+      containers:
+        - 
+          image: academiaonline/anagrams:latest
+          imagePullPolicy: Always
+          name: anagrams-container
+          volumeMounts:
+            - 
+              mountPath: /data
+              name: anagrams-volume
+              readOnly: true
+      imagePullSecrets:
+        -
+          name: docker-login
+      initContainers:
+        -
+          command:
+            - sh
+            - '-c'
+            - 'set -x ; cd /downloads ; rm -f ${DATA_FILE} ; wget ${URL}'
+          env:
+            -
+              name: DATA_FILE
+              valueFrom:
+                secretKeyRef:
+                  key: DATA_FILE
+                  name: anagrams-secret
+            -
+              name: URL
+              valueFrom:
+                secretKeyRef:
+                  key: URL
+                  name: anagrams-secret
+          image: busybox
+          name: anagrams-initcontainer
+          volumeMounts:
+            -
+              mountPath: /downloads
+              name: anagrams-volume
+              readOnly: false
+      restartPolicy: Never
+      volumes:
+        - 
+#          hostPath:
+#            path: /tmp/anagrams
+#            type: Directory
+          name: anagrams-volume
+          persistentVolumeClaim:
+            claimName: anagrams-pvc
+            readOnly: false
+          
