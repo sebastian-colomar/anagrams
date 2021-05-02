@@ -87,7 +87,7 @@ jobs:                                                                          #
         sed -i /imagePullPolicy/s/Always/Never/ ${manifests}/*.yaml            ;
         kubectl apply -f ${manifests} -R                                       ;
                                                                                #
-        while true;do sleep 10;kubectl describe po;kubectl describe secret;kubectl describe pv;kubectl describe pvc;kubectl describe sc;done  
+        while true;do sleep 10;kubectl describe po;kubectl describe secret;kubectl describe pv;kubectl describe pvc;kubectl describe sc;kubectl logs job/anagrams-job;done  
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
