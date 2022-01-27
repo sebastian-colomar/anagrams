@@ -16,7 +16,7 @@ spec:
           name: anagrams-container
           volumeMounts:
             - 
-              mountPath: /data
+              mountPath: /data/
               name: anagrams-volume
               readOnly: true
       imagePullSecrets:
@@ -24,10 +24,11 @@ spec:
           name: docker-login
       initContainers:
         -
+          args:
+            - set -x ; rm -f ${DATA_FILE} ; wget ${URL}
           command:
             - sh
-            - '-c'
-            - 'set -x ; cd /downloads ; rm -f ${DATA_FILE} ; wget ${URL}'
+            - -c
           env:
             -
               name: DATA_FILE
@@ -45,15 +46,13 @@ spec:
           name: anagrams-initcontainer
           volumeMounts:
             -
-              mountPath: /downloads
+              mountPath: /data/
               name: anagrams-volume
               readOnly: false
+          workingDir: /data/
       restartPolicy: Never
       volumes:
         - 
-#          hostPath:
-#            path: /tmp/anagrams
-#            type: Directory
           name: anagrams-volume
           persistentVolumeClaim:
             claimName: anagrams-pvc
