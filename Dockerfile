@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM library/python:alpine
 COPY src/anagrams.py script.py
 VOLUME /data
 ENTRYPOINT ["python"]
