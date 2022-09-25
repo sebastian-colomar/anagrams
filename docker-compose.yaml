@@ -1,0 +1,13 @@
+services:
+  anagrams:
+    command:
+    - python3
+    - script.py
+    image: index.docker.io/library/python:alpine
+    restart: "no"
+    user: nobody:nogroup
+    volumes:
+    - ./data/words.txt:/app/words.txt:ro
+    - ./src/anagrams.py:/app/script.py:ro
+    working_dir: /app/
+version: "2.0"
