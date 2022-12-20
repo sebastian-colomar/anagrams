@@ -1,3 +1,4 @@
+# docker run --detach --restart never --user nobody:nogroup --volumes ./data/words.txt:/app/words.txt:ro --volumes ./src/anagrams.py:/app/script.py:ro --workdir /app/ index.docker.io/library/python:alpine python3 script.py
 services:
   anagrams:
     command:
