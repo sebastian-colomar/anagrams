@@ -1,0 +1,7 @@
+services:
+  anagrams:
+    image: academiaonline/anagrams:latest
+    restart: "no"
+    volumes:
+    - /tmp/data:/data:ro
+version: "2.0"
