@@ -1,4 +1,4 @@
-[![CI](https://github.com/academiaonline-org/anagrams/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/academiaonline-org/anagrams/actions/workflows/ci.yaml)
+[![CI](https://github.com/sebastian-colomar/anagrams/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/sebastian-colomar/anagrams/actions/workflows/ci.yaml)
 # anagrams
 
 ```
