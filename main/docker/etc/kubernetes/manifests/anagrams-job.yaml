@@ -5,23 +5,19 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: anagrams-job
+  name: anagrams
 spec:
   template:
     spec:
       containers:
         - 
-          image: academiaonline/anagrams:latest
-          imagePullPolicy: Always
-          name: anagrams-container
+          image: docker.io/library/python:alpine
+          name: anagrams
           volumeMounts:
             - 
               mountPath: /data/
-              name: anagrams-volume
+              name: anagrams
               readOnly: true
-      imagePullSecrets:
-        -
-          name: docker-login
       initContainers:
         -
           args:
@@ -35,26 +31,26 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: DATA_FILE
-                  name: anagrams-secret
+                  name: anagrams
             -
               name: URL
               valueFrom:
                 secretKeyRef:
                   key: URL
-                  name: anagrams-secret
+                  name: anagrams
           image: busybox
-          name: anagrams-initcontainer
+          name: initcontainer
           volumeMounts:
             -
               mountPath: /data/
-              name: anagrams-volume
+              name: anagrams
               readOnly: false
           workingDir: /data/
       restartPolicy: Never
       volumes:
         - 
-          name: anagrams-volume
+          name: anagrams
           persistentVolumeClaim:
-            claimName: anagrams-pvc
+            claimName: anagrams
             readOnly: false
           
