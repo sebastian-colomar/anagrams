@@ -11,6 +11,9 @@ spec:
     spec:
       containers:
         - 
+          command:
+            - python
+            - anagrams.py
           image: docker.io/library/python:alpine
           name: anagrams
           volumeMounts:
@@ -21,7 +24,7 @@ spec:
       initContainers:
         -
           args:
-            - set -x ; rm -f ${DATA_FILE} ; wget ${URL}
+            - set -x ; rm -f ${DATA_FILE} ; wget ${URL} ; wget https://raw.githubusercontent.com/sebastian-colomar/anagrams/main/main/src/anagrams.py
           command:
             - sh
             - -c
