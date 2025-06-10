@@ -21,6 +21,7 @@ spec:
               mountPath: /data/
               name: anagrams
               readOnly: true
+          workingDir: /data/
       initContainers:
         -
           args:
